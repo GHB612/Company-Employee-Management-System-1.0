@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.employee.mapper.EmployeeMapper">
+
+    <resultMap id="BaseResultMap" type="Employee">
+        <id column="id" property="id"/>
+        <result column="employee_id" property="employeeId"/>
+        <result column="name" property="name"/>
+        <result column="gender" property="gender"/>
+        <result column="age" property="age"/>
+        <result column="department" property="department"/>
+        <result column="position" property="position"/>
+        <result column="phone" property="phone"/>
+        <result column="join_date" property="joinDate"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <!-- 查询所有员工 -->
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT id, employee_id, name, gender, age, department, position, phone, 
+               join_date, create_time, update_time
+        FROM employees
+        ORDER BY id DESC
+    </select>
+
+    <!-- 根据ID查询 -->
+    <select id="selectById" parameterType="Long" resultMap="BaseResultMap">
+        SELECT id, employee_id, name, gender, age, department, position, phone, 
+               join_date, create_time, update_time
+        FROM employees
+        WHERE id = #{id}
+    </select>
+
+    <!-- 根据工号查询 -->
+    <select id="selectByEmployeeId" parameterType="String" resultMap="BaseResultMap">
+        SELECT id, employee_id, name, gender, age, department, position, phone, 
+               join_date, create_time, update_time
+        FROM employees
+        WHERE employee_id = #{employeeId}
+    </select>
+
+    <!-- 分页查询 -->
+    <select id="selectByPage" resultMap="BaseResultMap">
+        SELECT id, employee_id, name, gender, age, department, position, phone, 
+               join_date, create_time, update_time
+        FROM employees
+        ORDER BY id DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <!-- 搜索员工 -->
+    <select id="searchEmployees" resultMap="BaseResultMap">
+        SELECT id, employee_id, name, gender, age, department, position, phone, 
+               join_date, create_time, update_time
+        FROM employees
+        WHERE name LIKE CONCAT('%', #{keyword}, '%')
+           OR employee_id LIKE CONCAT('%', #{keyword}, '%')
+           OR department LIKE CONCAT('%', #{keyword}, '%')
+        ORDER BY id DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <!-- 统计总数 -->
+    <select id="countAll" resultType="Long">
+        SELECT COUNT(*) FROM employees
+    </select>
+
+    <!-- 统计搜索结果总数 -->
+    <select id="countSearch" resultType="Long">
+        SELECT COUNT(*) FROM employees
+        WHERE name LIKE CONCAT('%', #{keyword}, '%')
+           OR employee_id LIKE CONCAT('%', #{keyword}, '%')
+           OR department LIKE CONCAT('%', #{keyword}, '%')
+    </select>
+
+    <!-- 插入员工 -->
+    <insert id="insert" parameterType="Employee" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO employees (employee_id, name, gender, age, department, position, phone, join_date)
+        VALUES (#{employeeId}, #{name}, #{gender}, #{age}, #{department}, #{position}, #{phone}, #{joinDate})
+    </insert>
+
+    <!-- 更新员工 -->
+    <update id="update" parameterType="Employee">
+        UPDATE employees
+        SET name = #{name},
+            gender = #{gender},
+            age = #{age},
+            department = #{department},
+            position = #{position},
+            phone = #{phone},
+            join_date = #{joinDate}
+        WHERE id = #{id}
+    </update>
+
+    <!-- 删除员工 -->
+    <delete id="deleteById" parameterType="Long">
+        DELETE FROM employees WHERE id = #{id}
+    </delete>
+
+</mapper>
